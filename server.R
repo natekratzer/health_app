@@ -3,14 +3,13 @@ library(shiny)
 library(ggplot2)
 library(classInt)
 library(ggthemes)
-library(grid)
 
-rank_and_nb_group<-function(var, order="descending"){
+rank_and_nb_group<-function(var, order="Descending"){
   df$var <- df[[var]]
-  if(order=="descending"){
+  if(order=="Descending"){
     d.order<-df[order(-df$var),]
   }
-  if(order=="ascending"){
+  if(order=="Ascending"){
     d.order<-df[order(df$var),]
   }
   ranks<-1:length(df$var)
@@ -34,10 +33,10 @@ rank_and_nb_group<-function(var, order="descending"){
   p<-ggplot(data=d.graph,aes(x=factor(names, levels=rev(unique(names))),
                         y=var*100,fill=factor(color)))+guides(fill=FALSE)
   p<-p+geom_bar(stat="identity",color=rev(d.graph$linecolor))+coord_flip()+theme_tufte()
-  if(order=="ascending"){
+  if(order=="Ascending"){
     p<-p+scale_fill_manual(values=c("green3","red2","yellow2"))
   }
-  if(order=="descending"){
+  if(order=="Descending"){
     p<-p+scale_fill_manual(values=c("red2","green3","yellow2"))
   }
   p<-p+theme(axis.text.y=element_text(hjust=0,face=rev(d.graph$textfont),
@@ -62,15 +61,17 @@ shinyServer(
       p<-ggplot(df, aes(x=var1,y=var2))
       p<-p+geom_smooth(method="lm",se=FALSE, color="black", size=.5)
       p<-p+geom_text(aes(label=Display),fontface=df$textfont, color=df$textcolor)
+      p<-p+labs(title="",x=input$var1,
+                y=input$var2)
       p<-p+theme_bw()
       p
     })
     output$plot2<-renderPlot({
-      p2<-rank_and_nb_group(input$var1, order="descending")
+      p2<-rank_and_nb_group(input$var1, order=input$var1_order)
       p2
   },width="auto", height="auto")
     output$plot3<-renderPlot({
-      p3<-rank_and_nb_group(input$var2, order="descending")
+      p3<-rank_and_nb_group(input$var2, order=input$var2_order)
       p3
     })
 
