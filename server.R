@@ -5,7 +5,7 @@ library(classInt)
 library(ggthemes)
 
 rank_and_nb_group<-function(var, order="Descending"){
-  df$var <- df[[var]]
+  df$var <- var
   if(order=="Descending"){
     d.order<-df[order(-df$var),]
   }
@@ -52,8 +52,14 @@ rank_and_nb_group<-function(var, order="Descending"){
 shinyServer(
   function(input, output) {
     output$plot1 <- renderPlot({ 
-      var1<-df[input$var1]
-      var2<-df[input$var2]
+      var2 <- switch(input$var2, 
+                     "Female Life Expectancy, Low Income" = df$le_agg_q1_F,
+                     "Male Life Expectancy, Low Income" = df$le_agg_q1_M)
+      var1<- switch(input$var1,
+                    "Smoking, Low Income"=df$cur_smoke_q1,
+                    "Obesity Rate, Low Income"=df$bmi_obese_q1,
+                    "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
+        
       df$textfont<-"plain"
       df$textfont[df$Display=="LOU"]<-"bold"
       df$textcolor<-"black"
@@ -67,11 +73,18 @@ shinyServer(
       p
     })
     output$plot2<-renderPlot({
-      p2<-rank_and_nb_group(input$var1, order=input$var1_order)
+      var1<- switch(input$var1,
+                    "Smoking, Low Income"=df$cur_smoke_q1,
+                    "Obesity Rate, Low Income"=df$bmi_obese_q1,
+                    "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
+      p2<-rank_and_nb_group(var1, order=input$var1_order)
       p2
   },width="auto", height="auto")
     output$plot3<-renderPlot({
-      p3<-rank_and_nb_group(input$var2, order=input$var2_order)
+      var2 <- switch(input$var2, 
+                     "Female Life Expectancy, Low Income" = df$le_agg_q1_F,
+                     "Male Life Expectancy, Low Income" = df$le_agg_q1_M)
+      p3<-rank_and_nb_group(var2, order=input$var2_order)
       p3
     })
 

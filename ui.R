@@ -7,14 +7,19 @@ shinyUI(fluidPage(
     sidebarPanel(
       helpText("Select Two Variables to Compare"),
       
-      selectInput("var1", "Variable 1:",choices = names(df), 
-                  selected="cur_smoke_q1"),
+      selectInput("var1", "Variable 1:",choices = 
+                    c("Smoking, Low Income",
+                      "Obesity Rate, Low Income",
+                      "Exercise in last 30 days, Low Income"), 
+                  selected="Smoking, Low Income"),
       
-      selectInput("var2", "Variable 2:", choices = names(df),
-                  selected="le_agg_q1_F"),
+      selectInput("var2", "Variable 2:", choices = 
+                    c("Female Life Expectancy, Low Income",
+                      "Male Life Expectancy, Low Income"),
+                  selected="Male Life Expectancy, Low Income"),
       
       selectInput("var1_order","Variable 1 Order:", choices = c("Ascending", "Descending"),
-                  selected="Descending"),
+                  selected="Ascending"),
       
       selectInput("var2_order","Variable 2 Order:", choices = c("Ascending", "Descending"),
                   selected="Descending")
