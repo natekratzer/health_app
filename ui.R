@@ -34,15 +34,21 @@ shinyUI(fluidPage(
     
     mainPanel(  
       tabsetPanel(type="tabs",
-                  tabPanel("Variable 1 Rankings", plotOutput("plot2"),
+                  tabPanel("Variable 1 Rankings", 
+                           h3(textOutput("textvar1"),align="center"),
+                           plotOutput("plot2"),
                            textOutput("text2"),
                            p(""),
                            p("Cities are sorted into green, yellow, and red using natural breaks to group cities together on similar levels, such that green represents a group of cities that are above average, yellow a group clustering around average, and red those substantially below average.")),
-                  tabPanel("Variable 2 Rankings", plotOutput("plot3"),
+                  tabPanel("Variable 2 Rankings", 
+                           h3(textOutput("textvar2"),align="center"),
+                           plotOutput("plot3"),
                            textOutput("text3"),
                            p(""),
                            p("Cities are sorted into green, yellow, and red using natural breaks to group cities together on similar levels, such that green represents a group of cities that are above average, yellow a group clustering around average, and red those substantially below average.")),
-                  tabPanel("Scatterplot", plotOutput("plot1"), 
+                  tabPanel("Scatterplot", 
+                           h3("Plot and Regression Line", align="center"),
+                           plotOutput("plot1"), 
                            textOutput("text1"))
       )
   )

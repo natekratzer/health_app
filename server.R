@@ -1,5 +1,7 @@
 df<-read.csv("all cities health ineq.csv",header=TRUE)
 library(shiny)
+library(dichromat)
+library(magrittr)
 library(ggplot2)
 library(classInt)
 library(ggthemes)
@@ -187,5 +189,7 @@ shinyServer(
       }
       output_text
     })
-
+    
+    output$textvar1<-renderText({input$var1})
+    output$textvar2<-renderText({input$var2})
 })    
