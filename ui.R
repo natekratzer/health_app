@@ -1,6 +1,8 @@
 library(shiny)
 shinyUI(fluidPage(
-  titlePanel("Explore Health Inequality Data"),p("An online data visualization tool from The Greater Louisville Project. Visit us at http://greaterlouisvilleproject.com/"),
+  img(src = "GLP_logo.png", align= "right"),
+  titlePanel("Health Inequality Explorer"),
+  p("An online data visualization tool from the", a("Greater Louisville Project", href="http://greaterlouisvilleproject.com/", target="_blank")),
   
   sidebarLayout(
     sidebarPanel(
@@ -22,28 +24,26 @@ shinyUI(fluidPage(
                       "Exercise in last 30 days, Low Income"),
                   selected="Smoking, Low Income"),
       
-      selectInput("var1_order","Variable 1 Order:", choices = c("Ascending", "Descending"),
-                  selected="Descending"),
-      
-      selectInput("var2_order","Variable 2 Order:", choices = c("Ascending", "Descending"),
-                  selected="Ascending"),
-      
       selectInput("peer_list","Peer City List:", choices=c("Current", "Baseline"),
                   selected= "Current"),
       
-      p("Data is from the Health Inequality Project. St. Louis is a population-weighted average of St. Louis County and St. Louis CityMore information can be found at https://healthinequality.org/")
+      p("Data is from the", a("Health Inequality Project.", href="https://healthinequality.org/"), "St. Louis is a population-weighted average of St. Louis County and St. Louis City.")
       
     
     ),
     
-    mainPanel(
+    mainPanel(  
       tabsetPanel(type="tabs",
-                  tabPanel("Scatterplot", plotOutput("plot1"), 
-                  textOutput("text1")),
                   tabPanel("Variable 1 Rankings", plotOutput("plot2"),
+                           textOutput("text2"),
+                           p(""),
                            p("Cities are sorted into green, yellow, and red using natural breaks to group cities together on similar levels, such that green represents a group of cities that are above average, yellow a group clustering around average, and red those substantially below average.")),
                   tabPanel("Variable 2 Rankings", plotOutput("plot3"),
-                           p("Cities are sorted into green, yellow, and red using natural breaks to group cities together on similar levels, such that green represents a group of cities that are above average, yellow a group clustering around average, and red those substantially below average."))
+                           textOutput("text3"),
+                           p(""),
+                           p("Cities are sorted into green, yellow, and red using natural breaks to group cities together on similar levels, such that green represents a group of cities that are above average, yellow a group clustering around average, and red those substantially below average.")),
+                  tabPanel("Scatterplot", plotOutput("plot1"), 
+                           textOutput("text1"))
       )
   )
 )))

@@ -24,7 +24,7 @@ rank_and_nb_group<-function(df, var, order="Descending"){
   d.graph$color[d.graph$var<=breaks$brks[2]]<-"green"
   d.graph$color[d.graph$var>breaks$brks[2] & d.graph$var<=breaks$brks[3]]<-"yellow"
   d.graph$color[d.graph$var>breaks$brks[3]]<-"red"
-  d.graph$round<-round(d.graph$var,2)
+  d.graph$round<-format(round(d.graph$var,1),nsmall=1)
   d.graph$textfont<-"plain"
   d.graph$textfont[d.graph$cz_name.x=="Louisville"]<-"bold"
   d.graph$linecolor<-"white"
@@ -49,6 +49,11 @@ rank_and_nb_group<-function(df, var, order="Descending"){
   p
 }
 
+##converting variables to the correct units
+df$cur_smoke_q1<-df$cur_smoke_q1*100
+df$bmi_obese_q1<-df$bmi_obese_q1*100
+df$exercise_any_q1<-df$exercise_any_q1*100
+
 
 shinyServer(
   function(input, output) {
@@ -68,13 +73,29 @@ shinyServer(
              "Obesity Rate, Low Income"=df$bmi_obese_q1,
              "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
     })
-    city_list <- reactive({
-      if(input$peer_list=="Current"){
-        df<-subset(df, Current == 1)
+    order_one <- reactive({
+      if(input$var1=="Male Life Expectancy, Low Income"|
+         input$var1=="Female Life Expectancy, Low Income"|
+         input$var1=="Exercise in last 30 days, Low Income"){
+        order<-"Descending"
       }
-      if(input$peer_list=="Baseline"){
-        df<-subset(df, Baseline ==1)
+      if(input$var1=="Obesity Rate, Low Income"|
+         input$var1=="Smoking, Low Income"){
+        order<-"Ascending"
       }
+      order
+    })
+    order_two <- reactive({
+      if(input$var2=="Male Life Expectancy, Low Income"|
+         input$var2=="Female Life Expectancy, Low Income"|
+         input$var2=="Exercise in last 30 days, Low Income"){
+        order<-"Descending"
+      }
+      if(input$var2=="Obesity Rate, Low Income"|
+         input$var2=="Smoking, Low Income"){
+        order<-"Ascending"
+      }
+      order
     })
     
     output$plot1 <- renderPlot({ 
@@ -106,19 +127,18 @@ shinyServer(
       if(input$peer_list=="Baseline"){
         df<-subset(df, Baseline ==1)
       }
-      p2<-rank_and_nb_group(df, df$var1, order=input$var1_order)
+      p2<-rank_and_nb_group(df, df$var1, order=order_one())
       p2
   })
     output$plot3<-renderPlot({
       df$var2 <- var2()
-      df$var1 <- var1()
       if(input$peer_list=="Current"){
         df<-subset(df, Current == 1)
       }
       if(input$peer_list=="Baseline"){
         df<-subset(df, Baseline ==1)
       }
-      p3<-rank_and_nb_group(df, df$var2, order=input$var2_order)
+      p3<-rank_and_nb_group(df, df$var2, order=order_two())
       p3
     })
     output$text1<-renderText({
@@ -130,6 +150,42 @@ shinyServer(
       }
       output_text
     })
-
+    output$text2<-renderText({
+      if(input$var1=="Female Life Expectancy, Low Income"){
+        output_text<-"Life expectancy at age 40 for women in the bottom quartile of the income distribution."
+      }
+      if(input$var1=="Male Life Expectancy, Low Income"){
+        output_text<-"Life expectancy at age 40 for men in the bottom quartile of the income distribution."
+      }
+      if(input$var1=="Smoking, Low Income"){
+        output_text<-"Percent of population in the bottom quartile of the income distribution who smoke."
+      }
+      if(input$var1=="Obesity Rate, Low Income"){
+        output_text<-"Percent of population in the bottom quartile of the income distribution who are obese."
+      }
+      if(input$var1=="Exercise in last 30 days, Low Income"){
+        output_text<-"Percent of population in the bottom quartile of the income distribution who have exercised in the last 30 days."
+      }
+      output_text
+    })
+    
+    output$text3<-renderText({
+      if(input$var2=="Female Life Expectancy, Low Income"){
+        output_text<-"Life expectancy at age 40 for women in the bottom quartile of the income distribution."
+      }
+      if(input$var2=="Male Life Expectancy, Low Income"){
+        output_text<-"Life expectancy at age 40 for men in the bottom quartile of the income distribution."
+      }
+      if(input$var2=="Smoking, Low Income"){
+        output_text<-"Percent of population in the bottom quartile of the income distribution who smoke."
+      }
+      if(input$var2=="Obesity Rate, Low Income"){
+        output_text<-"Percent of population in the bottom quartile of the income distribution who are obese."
+      }
+      if(input$var2=="Exercise in last 30 days, Low Income"){
+        output_text<-"Percent of population in the bottom quartile of the income distribution who have exercised in the last 30 days."
+      }
+      output_text
+    })
 
 })    
