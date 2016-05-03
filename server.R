@@ -51,39 +51,50 @@ rank_and_nb_group<-function(var, order="Descending"){
 
 shinyServer(
   function(input, output) {
+    var1 <- reactive({
+      switch(input$var1, 
+             "Female Life Expectancy, Low Income" = df$le_agg_q1_F,
+             "Male Life Expectancy, Low Income" = df$le_agg_q1_M,
+             "Smoking, Low Income"=df$cur_smoke_q1,
+             "Obesity Rate, Low Income"=df$bmi_obese_q1,
+             "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
+    })
+    var2 <- reactive({
+      switch(input$var2, 
+             "Female Life Expectancy, Low Income" = df$le_agg_q1_F,
+             "Male Life Expectancy, Low Income" = df$le_agg_q1_M,
+             "Smoking, Low Income"=df$cur_smoke_q1,
+             "Obesity Rate, Low Income"=df$bmi_obese_q1,
+             "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
+    })
+    
     output$plot1 <- renderPlot({ 
-      var2 <- switch(input$var2, 
-                     "Female Life Expectancy, Low Income" = df$le_agg_q1_F,
-                     "Male Life Expectancy, Low Income" = df$le_agg_q1_M)
-      var1<- switch(input$var1,
-                    "Smoking, Low Income"=df$cur_smoke_q1,
-                    "Obesity Rate, Low Income"=df$bmi_obese_q1,
-                    "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
-        
+      var1 <- var1()
+      var2 <- var2()
       df$textfont<-"plain"
       df$textfont[df$Display=="LOU"]<-"bold"
       df$textcolor<-"black"
       df$textcolor[df$Display=="LOU"]<-"blue"
-      p<-ggplot(df, aes(x=var1,y=var2))
+      p<-ggplot(df, aes(x=var2,y=var1))
       p<-p+geom_smooth(method="lm",se=FALSE, color="black", size=.5)
       p<-p+geom_text(aes(label=Display),fontface=df$textfont, color=df$textcolor)
-      p<-p+labs(title="",x=input$var1,
-                y=input$var2)
+      p<-p+labs(title="",x=input$var2,
+                y=input$var1)
       p<-p+theme_bw()
       p
     })
     output$plot2<-renderPlot({
-      var1<- switch(input$var1,
-                    "Smoking, Low Income"=df$cur_smoke_q1,
-                    "Obesity Rate, Low Income"=df$bmi_obese_q1,
-                    "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
+      var1 <- var1()
       p2<-rank_and_nb_group(var1, order=input$var1_order)
       p2
   },width="auto", height="auto")
     output$plot3<-renderPlot({
       var2 <- switch(input$var2, 
                      "Female Life Expectancy, Low Income" = df$le_agg_q1_F,
-                     "Male Life Expectancy, Low Income" = df$le_agg_q1_M)
+                     "Male Life Expectancy, Low Income" = df$le_agg_q1_M,
+                     "Smoking, Low Income"=df$cur_smoke_q1,
+                     "Obesity Rate, Low Income"=df$bmi_obese_q1,
+                     "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
       p3<-rank_and_nb_group(var2, order=input$var2_order)
       p3
     })

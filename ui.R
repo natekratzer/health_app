@@ -1,28 +1,38 @@
 df<-read.csv("merged health stl.csv",header=TRUE)
 library(shiny)
 shinyUI(fluidPage(
-  titlePanel("Explore Health Inequality Data"),
+  titlePanel("Explore Health Inequality Data"),p("An online data visualization tool from The Greater Louisville Project"),
   
   sidebarLayout(
     sidebarPanel(
       helpText("Select Two Variables to Compare"),
       
       selectInput("var1", "Variable 1:",choices = 
-                    c("Smoking, Low Income",
+                    c("Female Life Expectancy, Low Income",
+                      "Male Life Expectancy, Low Income",
+                      "Smoking, Low Income",
                       "Obesity Rate, Low Income",
                       "Exercise in last 30 days, Low Income"), 
-                  selected="Smoking, Low Income"),
+                  selected="Male Life Expectancy, Low Income"),
       
       selectInput("var2", "Variable 2:", choices = 
                     c("Female Life Expectancy, Low Income",
-                      "Male Life Expectancy, Low Income"),
-                  selected="Male Life Expectancy, Low Income"),
+                      "Male Life Expectancy, Low Income",
+                      "Smoking, Low Income",
+                      "Obesity Rate, Low Income",
+                      "Exercise in last 30 days, Low Income"),
+                  selected="Smoking, Low Income"),
       
       selectInput("var1_order","Variable 1 Order:", choices = c("Ascending", "Descending"),
-                  selected="Ascending"),
+                  selected="Descending"),
       
       selectInput("var2_order","Variable 2 Order:", choices = c("Ascending", "Descending"),
-                  selected="Descending")
+                  selected="Ascending"),
+      
+      selectInput("peer_list","Peer City List:", choices=c("Current", "Baseline"),
+                  selected= "Current"),
+      
+      p("Data is from the Health Inequality Project. More information can be found at https://healthinequality.org/")
       
     
     ),
