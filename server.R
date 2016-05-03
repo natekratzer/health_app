@@ -1,10 +1,11 @@
-df<-read.csv("merged health stl.csv",header=TRUE)
+df<-read.csv("all cities health ineq.csv",header=TRUE)
 library(shiny)
 library(ggplot2)
 library(classInt)
 library(ggthemes)
 
-rank_and_nb_group<-function(var, order="Descending"){
+rank_and_nb_group<-function(df, var, order="Descending"){
+  df<-df
   df$var <- var
   if(order=="Descending"){
     d.order<-df[order(-df$var),]
@@ -67,10 +68,24 @@ shinyServer(
              "Obesity Rate, Low Income"=df$bmi_obese_q1,
              "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
     })
+    city_list <- reactive({
+      if(input$peer_list=="Current"){
+        df<-subset(df, Current == 1)
+      }
+      if(input$peer_list=="Baseline"){
+        df<-subset(df, Baseline ==1)
+      }
+    })
     
     output$plot1 <- renderPlot({ 
-      var1 <- var1()
-      var2 <- var2()
+      df$var1 <- var1()
+      df$var2 <- var2()
+      if(input$peer_list=="Current"){
+        df<-subset(df, Current == 1)
+      }
+      if(input$peer_list=="Baseline"){
+        df<-subset(df, Baseline ==1)
+      }
       df$textfont<-"plain"
       df$textfont[df$Display=="LOU"]<-"bold"
       df$textcolor<-"black"
@@ -84,21 +99,37 @@ shinyServer(
       p
     })
     output$plot2<-renderPlot({
-      var1 <- var1()
-      p2<-rank_and_nb_group(var1, order=input$var1_order)
+      df$var1 <- var1()
+      if(input$peer_list=="Current"){
+        df<-subset(df, Current == 1)
+      }
+      if(input$peer_list=="Baseline"){
+        df<-subset(df, Baseline ==1)
+      }
+      p2<-rank_and_nb_group(df, df$var1, order=input$var1_order)
       p2
-  },width="auto", height="auto")
+  })
     output$plot3<-renderPlot({
-      var2 <- switch(input$var2, 
-                     "Female Life Expectancy, Low Income" = df$le_agg_q1_F,
-                     "Male Life Expectancy, Low Income" = df$le_agg_q1_M,
-                     "Smoking, Low Income"=df$cur_smoke_q1,
-                     "Obesity Rate, Low Income"=df$bmi_obese_q1,
-                     "Exercise in last 30 days, Low Income"=df$exercise_any_q1)
-      p3<-rank_and_nb_group(var2, order=input$var2_order)
+      df$var2 <- var2()
+      df$var1 <- var1()
+      if(input$peer_list=="Current"){
+        df<-subset(df, Current == 1)
+      }
+      if(input$peer_list=="Baseline"){
+        df<-subset(df, Baseline ==1)
+      }
+      p3<-rank_and_nb_group(df, df$var2, order=input$var2_order)
       p3
     })
-
+    output$text1<-renderText({
+      if(input$peer_list=="Current"){
+        output_text<-"Current Peer Cities: BIR = Birmingham, CHA = Charlotte, CIN = Cincinatti, COL = Columbus, GBR = Greensboro, GR = Grand Rapids, GVL = Greensville, IND = Indianapolis, KC = Kansas City, KNO = Knoxville, LOU = Louisville, MEM = Memphis, NAS = Nashville, OKL = Oklahoma, OMA = Omaha, STL= St. Louis, TUL = Tulsa"
+      }
+      if(input$peer_list=="Baseline"){
+        output_text<-"Baseline Peer Cities: BIR = Birmingham, CHA = Charlotte, CIN = Cincinatti, COL = Columbus, DAY = Dayton, GBR = Greensboro, IND = Indianapolis, JAC = Jacksonville, KC = Kansas City, LOU = Louisville, MEM = Memphis, NAS = Nashville, OKL = Oklahoma, OMA = Omaha, RAL = Raleigh, RIC = Richmond"
+      }
+      output_text
+    })
 
 
 })    

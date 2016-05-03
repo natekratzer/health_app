@@ -1,7 +1,6 @@
-df<-read.csv("merged health stl.csv",header=TRUE)
 library(shiny)
 shinyUI(fluidPage(
-  titlePanel("Explore Health Inequality Data"),p("An online data visualization tool from The Greater Louisville Project"),
+  titlePanel("Explore Health Inequality Data"),p("An online data visualization tool from The Greater Louisville Project. Visit us at http://greaterlouisvilleproject.com/"),
   
   sidebarLayout(
     sidebarPanel(
@@ -32,7 +31,7 @@ shinyUI(fluidPage(
       selectInput("peer_list","Peer City List:", choices=c("Current", "Baseline"),
                   selected= "Current"),
       
-      p("Data is from the Health Inequality Project. More information can be found at https://healthinequality.org/")
+      p("Data is from the Health Inequality Project. St. Louis is a population-weighted average of St. Louis County and St. Louis CityMore information can be found at https://healthinequality.org/")
       
     
     ),
@@ -40,7 +39,7 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(type="tabs",
                   tabPanel("Scatterplot", plotOutput("plot1"), 
-                  p("BIR = Birmingham, CHA = Charlotte, CIN = Cincinatti, COL = Columbus, GBR = Greensboro, GR = Grand Rapids, GVL = Greensville, IND = Indianapolis, KC = Kansas City, KNO = Knoxville, LOU = Louisville, MEM = Memphis, NAS = Nashville, OKL = Oklahoma, OMA = Omaha, STL= St. Louis, TUL = Tulsa")),
+                  textOutput("text1")),
                   tabPanel("Variable 1 Rankings", plotOutput("plot2"),
                            p("Cities are sorted into green, yellow, and red using natural breaks to group cities together on similar levels, such that green represents a group of cities that are above average, yellow a group clustering around average, and red those substantially below average.")),
                   tabPanel("Variable 2 Rankings", plotOutput("plot3"),
